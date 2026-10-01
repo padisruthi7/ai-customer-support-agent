@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Customer Support Agent</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <h1>AI Customer Support Agent</h1>
+        <button id="clear-btn" class="secondary">Clear conversation</button>
+      </header>
+
+      <main class="chat-panel">
+        <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+
+        <form id="chat-form" class="chat-form">
+          <input id="message-input" type="text" placeholder="Ask about an order, refund, return, or shipping..." autocomplete="off" />
+          <button type="submit">Send</button>
+        </form>
+      </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

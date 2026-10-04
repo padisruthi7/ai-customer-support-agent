@@ -92,11 +92,11 @@ Important notes:
 
 From the project root:
 
-   .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+   .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8005
 
 Then open:
 
-   http://127.0.0.1:8000/
+   http://127.0.0.1:8005/
 
 ## Run the tests
 

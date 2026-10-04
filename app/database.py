@@ -77,13 +77,45 @@ class ConversationMessage(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
-    create_sample_data()
+    ensure_seed_data()
+
+
+def ensure_seed_data() -> None:
+    with SessionLocal() as session:
+        if session.query(Customer).count() > 0:
+            return
+
+        session.add_all(
+            [
+                Customer(customer_id="CUST1001", name="Aisha Khan", email="aisha@example.com"),
+                Customer(customer_id="CUST1002", name="Daniel Smith", email="daniel@example.com"),
+                Customer(customer_id="CUST1003", name="Maya Patel", email="maya@example.com"),
+            ]
+        )
+
+        session.add_all(
+            [
+                Order(order_id="ORD1001", customer_id="CUST1001", item="Wireless Headphones", total="$89.99", status="in_transit", shipping_eta="2 days"),
+                Order(order_id="ORD1002", customer_id="CUST1002", item="Smart Watch", total="$149.99", status="processing", shipping_eta="4 days"),
+                Order(order_id="ORD1003", customer_id="CUST1003", item="Portable Speaker", total="$59.99", status="delivered", shipping_eta="Delivered on 2026-09-10"),
+            ]
+        )
+
+        session.add_all(
+            [
+                Refund(order_id="ORD1002", customer_id="CUST1002", amount="$149.99", status="approved", reason="Duplicate payment"),
+                Refund(order_id="ORD1003", customer_id="CUST1003", amount="$59.99", status="completed", reason="Damaged item"),
+            ]
+        )
+
+        session.commit()
 
 
 def get_db_session():

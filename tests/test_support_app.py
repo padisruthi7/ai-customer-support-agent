@@ -121,3 +121,17 @@ def test_unsupported_request_returns_safe_help_message():
     result = agent.process_message("session-unsupported", "Can you give me today's crypto price?")
     assert "order support" in result["response"].lower()
     assert result["tool_used"] is None
+
+
+def test_default_database_url_is_serverless_safe_on_vercel(monkeypatch):
+    monkeypatch.setenv("VERCEL", "1")
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    import importlib
+    import app.config as config
+
+    importlib.reload(config)
+    assert "/tmp/" in config.DATABASE_URL or "tmp" in config.DATABASE_URL.lower()
+
+    monkeypatch.delenv("VERCEL", raising=False)
+    importlib.reload(config)
+    assert "customer_support.db" in config.DATABASE_URL
